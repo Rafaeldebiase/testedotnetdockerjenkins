@@ -3,7 +3,7 @@ pipeline{
     stages{
         stage('Build') {
             agent {
-                dockerfile
+                dockerfile true
             }
             steps {
                 echo 'docker build'
