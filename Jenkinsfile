@@ -1,17 +1,23 @@
 pipeline{
     agent {
-        docker 'mcr.microsoft.com/dotnet/aspnet:5.0'
-        args '-p 5000:5000'
+        docker {
+            image 'mcr.microsoft.com/dotnet/aspnet:5.0'
+            args '-p 5000:5000'
+        }
     }
     environment {
         CI = 'true'
     }
     stages{
         stage('Build') {
-            sh 'dotnet build'
+            steps {
+                sh 'dotnet build'
+            }
         }
         stage('Unit tests') {
-            echo 'dotnet test'
+            steps {
+                echo 'dotnet test'
+            }
         }
         stage('Deploy to development') {
             when {
