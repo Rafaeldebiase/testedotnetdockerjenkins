@@ -63,6 +63,7 @@ pipeline{
         stage('Build Docker') {
             agent {
                 dockerfile {
+                    dir '/app/publish'
                     args '${profile}'
                     args '${release}'
                 }
