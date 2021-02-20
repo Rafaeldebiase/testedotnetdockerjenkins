@@ -1,10 +1,5 @@
 pipeline{
-    agent {
-        docker {
-            image 'mcr.microsoft.com/dotnet/aspnet:5.0'
-            args '-p 5000:5000'
-        }
-    }
+    agent any
     environment {
         CI = 'true'
     }
@@ -16,7 +11,7 @@ pipeline{
         }
         stage('Unit tests') {
             steps {
-                echo 'dotnet test'
+                sh 'dotnet test'
             }
         }
         stage('Deploy to development') {
@@ -39,6 +34,9 @@ pipeline{
         stage('Deploy to production') {
             when {
                 branch 'production'
+            }
+            agent {
+                dockerfile true
             }
             steps {
                 echo 'deploy para prod'
