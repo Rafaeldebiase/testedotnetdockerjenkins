@@ -13,13 +13,13 @@ RUN dotnet build "jenkins.csproj" -c Release -o /app/build
 
 FROM build AS publish
 ARG PROFILE
-ARG RELEASE
+ARG RELEASE=Debug
 
 RUN echo ${PROFILE}
 RUN echo ${RELEASE}
 
 
-RUN ASPNETCORE_ENVIRONMENT=${PROFILE} dotnet publish "jenkins.csproj" ${RELEASE} -o /app/publish
+RUN ASPNETCORE_ENVIRONMENT=${PROFILE} dotnet publish "jenkins.csproj" -c ${RELEASE} -o /app/publish
 
 FROM base AS final
 WORKDIR /app
