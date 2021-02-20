@@ -12,7 +12,7 @@ WORKDIR "/src/."
 RUN dotnet build "jenkins.csproj" -c Release -o /app/build
 
 FROM build AS publish
-ARG PROFILE=Development
+ARG PROFILE
 ENV RELEASE=Debug
 
 RUN echo ${PROFILE}
