@@ -17,24 +17,24 @@ pipeline{
             }
         }
         stage('Deploy to development') {
-            when {
-                branch 'devolpment'
-            }
             agent {
                 dockerfile true
                 args 'development'
+            }
+            when {
+                branch 'devolpment'
             }
             steps {
                 echo 'deploy para dev'
             }
         }
         stage('Deploy to QA') {
-            when {
-                branch 'QA'
-            }
             agent {
                 dockerfile true
                 args 'staging'
+            }
+            when {
+                branch 'QA'
             }
             steps {
                 echo 'deploy para QA'
@@ -42,12 +42,12 @@ pipeline{
 
         }
         stage('Deploy to production') {
-            when {
-                branch 'production'
-            }
             agent {
                 dockerfile true
                 args 'production'
+            }
+            when {
+                branch 'production'
             }
             steps {
                 echo 'deploy para prod'
