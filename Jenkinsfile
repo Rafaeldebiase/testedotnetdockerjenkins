@@ -45,7 +45,7 @@ pipeline{
         stage('Deploy to production') {
             when {
                 beforeInput true
-                branch 'production'
+                branch 'main'
             }
             input {
                 message "Deploy to production?"
