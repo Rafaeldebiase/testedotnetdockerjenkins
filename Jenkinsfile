@@ -62,8 +62,7 @@ pipeline{
         stage('Build Docker') {
             agent {
                 dockerfile {
-                    additionalBuildArgs  '--build-arg PROFILE=${profile}'
-                    additionalBuildArgs  '--build-arg RELEASE=${release}'
+                    additionalBuildArgs  '--build-arg PROFILE=${profile} RELEASE=${release}'
                 }
             }
             steps {
