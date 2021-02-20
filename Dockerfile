@@ -18,6 +18,7 @@ ARG release
 
 RUN echo ${enviroment}
 RUN if [ "${enviroment}" = "production" ]; then ${release}=-c Release; fi
+RUN echo ${release}
 
 RUN ASPNETCORE_ENVIRONMENT=${enviroment} dotnet publish "jenkins.csproj" ${release} -o /app/publish
 
