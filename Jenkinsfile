@@ -53,6 +53,7 @@ pipeline{
             }
             environment {
                 profile = 'Production'
+                release = '-c Release'
             }
             steps {
                 echo 'deploy para ${env.Profile}'
@@ -62,6 +63,7 @@ pipeline{
             agent {
                 dockerfile {
                     args '${profile}'
+                    args '${release}'
                 }
             }
             steps {

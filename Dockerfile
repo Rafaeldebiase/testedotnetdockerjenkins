@@ -1,19 +1,27 @@
-FROM mcr.microsoft.com/dotnet/aspnet:5.0 AS build-env
+FROM mcr.microsoft.com/dotnet/aspnet:5.0 AS base
 WORKDIR /app
 EXPOSE 80
-EXPOSE 5000
-ARG enviroment
+EXPOSE 443
 
-RUN echo ${enviroment}
-
-COPY . .
-
+FROM mcr.microsoft.com/dotnet/sdk:5.0 AS build
+WORKDIR /src
+COPY ["jenkins.csproj", "./"]
 RUN dotnet restore "jenkins.csproj"
+COPY . .
+WORKDIR "/src/."
+RUN dotnet build "jenkins.csproj" -c Release -o /app/build
 
-RUN ASPNETCORE_ENVIRONMENT=${enviroment} dotnet publish "./jenkins.csproj" -o out
+FROM build AS publish
+ARG PROFILE
+ARG RELEASE
 
-FROM mcr.microsoft.com/dotnet/aspnet:5.0 AS runtime
+RUN echo ${PROFILE}
+RUN echo ${RELEASE}
+
+
+RUN ASPNETCORE_ENVIRONMENT=${PROFILE} dotnet publish "jenkins.csproj" ${RELEASE} -o /app/publish
+
+FROM base AS final
 WORKDIR /app
-COPY --from=build-env /app/out .
-
-CMD [ "dotnet", "jenkins.dll" ]
+COPY --from=publish /app/publish .
+CMD ["dotnet", "jenkins.dll"]
