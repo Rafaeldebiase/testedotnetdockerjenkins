@@ -18,6 +18,7 @@ pipeline{
             }
         }
         stage('Deploy to development') {
+            agent any
             when {
                 branch 'devolpment'
             }
