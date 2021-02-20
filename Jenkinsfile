@@ -60,7 +60,9 @@ pipeline{
         }
         stage('Build Docker') {
             agent {
-                dockerfile true
+                dockerfile {
+                    args '${profile}'
+                }
             }
             steps {
                 echo 'build docker'
