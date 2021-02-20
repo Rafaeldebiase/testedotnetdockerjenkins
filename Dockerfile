@@ -15,6 +15,7 @@ RUN dotnet build "jenkins.csproj" -c ${RELEASE} -o /app/build
 
 FROM build AS publish
 ARG PROFILE
+ARG RELEASE
 
 RUN echo ${PROFILE}
 RUN echo ${RELEASE}
