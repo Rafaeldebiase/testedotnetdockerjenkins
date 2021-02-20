@@ -14,13 +14,10 @@ RUN dotnet build "jenkins.csproj" -c Release -o /app/build
 
 FROM build AS publish
 ARG enviroment=development
-ARG release
 
 RUN echo ${enviroment}
-RUN if [ "${enviroment}" = "production" ]; then ${release}=-c Release; fi
-RUN echo ${release}
 
-RUN ASPNETCORE_ENVIRONMENT=${enviroment} dotnet publish "jenkins.csproj" ${release} -o /app/publish
+RUN ASPNETCORE_ENVIRONMENT=${enviroment} dotnet publish "jenkins.csproj" -o /app/publish
 
 FROM base AS final
 WORKDIR /app
