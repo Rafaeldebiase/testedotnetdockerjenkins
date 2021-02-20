@@ -62,7 +62,9 @@ pipeline{
         }
         stage('Build Docker') {
             agent {
-                dockerfile true
+                dockerfile {
+                    additionalBuildArgs  '--build-arg profile=Production'
+                }
             }
             steps {
                 echo 'build docker'
