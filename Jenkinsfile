@@ -3,6 +3,7 @@ pipeline{
     environment {
         CI = 'true'
         profile = 'Development'
+        release = '-c Debug'
     }
     stages{
         stage('Build dotnet') {
