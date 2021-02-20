@@ -1,50 +1,85 @@
 pipeline{
-    agent {
-        docker {
-            image 'mcr.microsoft.com/dotnet/aspnet:5.0'
-            args '-p 5000:5000'
-        }
-    }
+    agent none
     environment {
         CI = 'true'
+        profile = 'Development'
     }
     stages{
-        stage('Build') {
+        stage('Build dotnet') {
+            agent any
             steps {
                 sh 'dotnet build'
             }
         }
         stage('Unit tests') {
+            agent any
             steps {
-                echo 'dotnet test'
+                sh 'dotnet test'
             }
         }
         stage('Deploy to development') {
+            agent any
             when {
                 branch 'devolpment'
             }
             steps {
-                echo 'deploy para dev'
+                echo 'deploy para ${env.Profile}'
             }
         }
         stage('Deploy to QA') {
             when {
+                beforeInput true
                 branch 'QA'
             }
-            steps {
-                echo 'deploy para QA'
+            input {
+                message "Deploy to QA?"
+                id "simple-input"
             }
-
+            environment {
+                profile = 'Staging'
+            }
+            steps {
+                echo 'deploy para ${env.Profile}'
+            }
         }
         stage('Deploy to production') {
             when {
-                branch 'production'
+                beforeInput true
+                branch 'main'
+            }
+            input {
+                message "Deploy to production?"
+                id "simple-input"
+            }
+            environment {
+                profile = 'Production'
             }
             steps {
-                echo 'deploy para prod'
+                echo 'deploy para ${env.Profile}'
             }
         }
-
+        stage('Build Docker') {
+            agent {
+                dockerfile {
+                    args '${profile}'
+                }
+            }
+            steps {
+                echo 'build docker'
+            }
+        }
+    }
+    post{
+        always{
+            echo "====++++always++++===="
+        }
+        success{
+            echo "====++++only when successful++++===="
+            
+        }
+        failure{
+            echo "====++++only when failed++++===="
+        }
     }
 }
 
