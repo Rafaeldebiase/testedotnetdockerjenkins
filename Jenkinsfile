@@ -32,11 +32,11 @@ pipeline{
 
         }
         stage('Deploy to production') {
-            agent {
-                dockerfile true
-            }
             when {
                 branch 'production'
+            }
+            agent {
+                dockerfile true
             }
             steps {
                 echo 'deploy para prod'
