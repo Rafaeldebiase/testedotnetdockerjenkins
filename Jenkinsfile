@@ -3,7 +3,6 @@ pipeline{
     environment {
         CI = 'true'
         profile = 'Development'
-        release = '-c Debug'
     }
     stages{
         stage('Build dotnet') {
@@ -63,7 +62,8 @@ pipeline{
         stage('Build Docker') {
             agent {
                 dockerfile {
-                    additionalBuildArgs  '--build-arg PROFILE=Production'
+                    additionalBuildArgs  '--build-arg PROFILE=${profile}'
+                    additionalBuildArgs  '--build-arg RELEASE=${release}'
                 }
             }
             steps {
