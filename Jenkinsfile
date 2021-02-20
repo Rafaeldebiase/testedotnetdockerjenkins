@@ -1,15 +1,17 @@
 pipeline{
-    agent any
+    agent none
     environment {
         CI = 'true'
     }
     stages{
         stage('Build') {
+            agent any
             steps {
                 sh 'dotnet build'
             }
         }
         stage('Unit tests') {
+            agent any
             steps {
                 sh 'dotnet test'
             }
