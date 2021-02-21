@@ -9,6 +9,7 @@ pipeline{
         stage('Build dotnet') {
             steps {
                 sh 'dotnet build'
+                sendTelegram('teste')
             }
         }
         stage('Unit tests') {
@@ -26,12 +27,7 @@ pipeline{
         }
         stage('Deploy to QA') {
             when {
-                beforeInput true
                 branch 'QA'
-            }
-            input {
-                message "Deploy to QA?"
-                id "simple-input"
             }
             environment {
                 profile = 'Staging'
@@ -42,12 +38,7 @@ pipeline{
         }
         stage('Deploy to production') {
             when {
-                beforeInput true
                 branch 'main'
-            }
-            input {
-                message "Deploy to production?"
-                id "simple-input"
             }
             environment {
                 profile = 'Production'
@@ -80,6 +71,21 @@ pipeline{
         failure{
             echo "====++++only when failed++++===="
         }
+    }
+}
+
+def sendTelegram(message) {
+    def encodedMessage = URLEncoder.encode(message, "UTF-8")
+
+    withCredentials([string(credentialsId: 'telegramToken', variable: 'TOKEN'),
+    string(credentialsId: 'telegramChatId', variable: 'CHAT_ID')]) {
+
+        response = httpRequest (consoleLogResponseBody: true,
+                contentType: 'APPLICATION_JSON',
+                httpMode: 'GET',
+                url: "https://api.telegram.org/bot$TOKEN/sendMessage?text=$encodedMessage&chat_id=$CHAT_ID&disable_web_page_preview=true",
+                validResponseCodes: '200')
+        return response
     }
 }
 
