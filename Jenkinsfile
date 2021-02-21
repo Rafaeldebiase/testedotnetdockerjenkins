@@ -1,5 +1,5 @@
 pipeline{
-    agent none
+    agent any
     environment {
         CI = 'true'
         profile = 'Development'
@@ -7,19 +7,16 @@ pipeline{
     }
     stages{
         stage('Build dotnet') {
-            agent any
             steps {
                 sh 'dotnet build'
             }
         }
         stage('Unit tests') {
-            agent any
             steps {
                 sh 'dotnet test'
             }
         }
         stage('Deploy to development') {
-            agent any
             when {
                 branch 'devolpment'
             }
