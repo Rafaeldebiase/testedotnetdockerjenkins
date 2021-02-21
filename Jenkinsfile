@@ -9,12 +9,23 @@ pipeline{
         stage('Build dotnet') {
             steps {
                 sh 'dotnet build'
-                step([$class:'TelegramBotBuilder', message: 'teste'])
             }
         }
         stage('Unit tests') {
             steps {
                 sh 'dotnet test'
+            }
+            post{
+                success{
+                    step([$class:'TelegramBotPublisher', message: 'Build docker image', 
+                        whenSuccess: true])
+
+                }
+                failure{
+                    step([$class:'TelegramBotPublisher', message: 'Build docker image', 
+                        whenFailed: true])
+
+                }
             }
         }
         stage('Deploy to development') {
@@ -58,6 +69,19 @@ pipeline{
             steps {
                 echo 'build docker'
             }
+            post{
+                always{
+                    echo "====++++always++++===="
+                }
+                success{
+                    step([$class:'TelegramBotPublisher', message: 'Build docker image', 
+                        whenSuccess: true])
+                }
+                failure{
+                    step([$class:'TelegramBotPublisher', message: 'Build docker image', 
+                        whenFailed: true])
+                }
+            }
         }
     }
     post{
@@ -73,5 +97,6 @@ pipeline{
         }
     }
 }
+
 
 
