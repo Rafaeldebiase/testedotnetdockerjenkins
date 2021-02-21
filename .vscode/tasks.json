@@ -45,7 +45,7 @@
                 "build"
             ],
             "dockerBuild": {
-                "tag": "jenkins:dev",
+                "tag": "testedotnetdockerjenkins:dev",
                 "target": "base",
                 "dockerfile": "${workspaceFolder}/Dockerfile",
                 "context": "${workspaceFolder}",
@@ -62,7 +62,7 @@
                 "build"
             ],
             "dockerBuild": {
-                "tag": "jenkins:latest",
+                "tag": "testedotnetdockerjenkins:latest",
                 "dockerfile": "${workspaceFolder}/Dockerfile",
                 "context": "${workspaceFolder}",
                 "pull": true
