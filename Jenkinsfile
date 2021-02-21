@@ -17,12 +17,12 @@ pipeline{
             }
             post{
                 success{
-                    step([$class:'TelegramBotPublisher', message: 'Build docker image', 
+                    step([$class:'TelegramBotPublisher', message: 'Etapa de testes - OK', 
                         whenSuccess: true])
 
                 }
                 failure{
-                    step([$class:'TelegramBotPublisher', message: 'Build docker image', 
+                    step([$class:'TelegramBotPublisher', message: 'Etapa de Testes - Fail', 
                         whenFailed: true])
 
                 }
@@ -70,15 +70,12 @@ pipeline{
                 echo 'build docker'
             }
             post{
-                always{
-                    echo "====++++always++++===="
-                }
                 success{
-                    step([$class:'TelegramBotPublisher', message: 'Build docker image', 
+                    step([$class:'TelegramBotPublisher', message: 'Build docker image - OK', 
                         whenSuccess: true])
                 }
                 failure{
-                    step([$class:'TelegramBotPublisher', message: 'Build docker image', 
+                    step([$class:'TelegramBotPublisher', message: 'Build docker image - Fail', 
                         whenFailed: true])
                 }
             }
