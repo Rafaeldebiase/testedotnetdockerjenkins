@@ -64,7 +64,7 @@ pipeline{
             agent {
                 dockerfile {
                     additionalBuildArgs  '--build-arg PROFILE=${profile} --build-arg RELEASE=${release}'
-                    args '-p 80:5000'
+                    args '-p 5000:80'
                 }
             }
             steps {
