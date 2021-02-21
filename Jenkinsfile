@@ -77,8 +77,8 @@ pipeline{
 def sendTelegram(message) {
     def encodedMessage = URLEncoder.encode(message, "UTF-8")
 
-    withCredentials([string(credentialsId: 'telegramToken', variable: 'TOKEN'),
-    string(credentialsId: 'telegramChatId', variable: 'CHAT_ID')]) {
+    withCredentials([string(credentialsId: 'TelegramToken', variable: 'TOKEN'),
+    string(credentialsId: 'TelegramChatId', variable: 'CHAT_ID')]) {
 
         response = httpRequest (consoleLogResponseBody: true,
                 contentType: 'APPLICATION_JSON',
