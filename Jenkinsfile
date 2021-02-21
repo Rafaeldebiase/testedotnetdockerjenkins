@@ -9,11 +9,7 @@ pipeline{
         stage('Build dotnet') {
             steps {
                 sh 'dotnet build'
-                step([$class:'TelegramBotBuilder']) {
-                    telegramSend {
-                        message 'teste'
-                    }
-                }
+                step([$class:'TelegramBotBuilder', message: 'teste'])
             }
         }
         stage('Unit tests') {
