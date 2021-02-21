@@ -1,24 +1,34 @@
 pipeline{
-    agent none
+    agent any
     environment {
         CI = 'true'
         profile = 'Development'
+        release = 'Debug'
     }
     stages{
         stage('Build dotnet') {
-            agent any
             steps {
                 sh 'dotnet build'
             }
         }
         stage('Unit tests') {
-            agent any
             steps {
                 sh 'dotnet test'
             }
+            post{
+                success{
+                    step([$class:'TelegramBotPublisher', message: 'Etapa de testes - OK', 
+                        whenSuccess: true])
+
+                }
+                failure{
+                    step([$class:'TelegramBotPublisher', message: 'Etapa de Testes - Fail', 
+                        whenFailed: true])
+
+                }
+            }
         }
         stage('Deploy to development') {
-            agent any
             when {
                 branch 'devolpment'
             }
@@ -28,12 +38,7 @@ pipeline{
         }
         stage('Deploy to QA') {
             when {
-                beforeInput true
                 branch 'QA'
-            }
-            input {
-                message "Deploy to QA?"
-                id "simple-input"
             }
             environment {
                 profile = 'Staging'
@@ -44,15 +49,11 @@ pipeline{
         }
         stage('Deploy to production') {
             when {
-                beforeInput true
-                branch 'production'
-            }
-            input {
-                message "Deploy to production?"
-                id "simple-input"
+                branch 'main'
             }
             environment {
                 profile = 'Production'
+                release = 'Release'
             }
             steps {
                 echo 'deploy para ${env.Profile}'
@@ -61,11 +62,22 @@ pipeline{
         stage('Build Docker') {
             agent {
                 dockerfile {
-                    args '${profile}'
+                    additionalBuildArgs  '--build-arg PROFILE=${profile} --build-arg RELEASE=${release}'
+                    args '-p 5000:80'
                 }
             }
             steps {
                 echo 'build docker'
+            }
+            post{
+                success{
+                    step([$class:'TelegramBotPublisher', message: 'Build docker image - OK', 
+                        whenSuccess: true])
+                }
+                failure{
+                    step([$class:'TelegramBotPublisher', message: 'Build docker image - Fail', 
+                        whenFailed: true])
+                }
             }
         }
     }
@@ -82,4 +94,6 @@ pipeline{
         }
     }
 }
+
+
 

@@ -1,29 +1,28 @@
 FROM mcr.microsoft.com/dotnet/aspnet:5.0 AS base
 WORKDIR /app
 EXPOSE 80
-EXPOSE 5000
+EXPOSE 443
 
 FROM mcr.microsoft.com/dotnet/sdk:5.0 AS build
 WORKDIR /src
+ARG RELEASE
 
 COPY ["jenkins.csproj", "./"]
 RUN dotnet restore "jenkins.csproj"
 COPY . .
 WORKDIR "/src/."
-RUN dotnet build "jenkins.csproj" -c Release -o /app/build
+RUN dotnet build "jenkins.csproj" -c ${RELEASE} -o /app/build
 
 FROM build AS publish
-ARG enviroment=development
-ARG release
+ARG PROFILE
+ARG RELEASE
 
-RUN echo ${enviroment}
-RUN if [ "${enviroment}" = "production" ]; then ${release}=-c Release; fi
-RUN echo ${release}
+RUN echo ${PROFILE}
+RUN echo ${RELEASE}
 
-RUN ASPNETCORE_ENVIRONMENT=${enviroment} dotnet publish "jenkins.csproj" ${release} -o /app/publish
+RUN ASPNETCORE_ENVIRONMENT=${PROFILE} dotnet publish "jenkins.csproj" -c ${RELEASE} -o /app/publish
 
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
-
-CMD [ "dotnet", "jenkins.dll" ]
+CMD ["dotnet", "jenkins.dll"]
